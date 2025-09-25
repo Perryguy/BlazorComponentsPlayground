@@ -1,0 +1,8 @@
+root = true
+[*.{cs,razor}]
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+
+dotnet_diagnostic.SA0001.severity = none
+dotnet_diagnostic.CS1591.severity = none  # enable later when you document
