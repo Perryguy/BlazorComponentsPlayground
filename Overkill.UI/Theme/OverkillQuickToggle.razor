@@ -1,0 +1,17 @@
+@namespace Overkill.UI
+@using Overkill.UI.Theme
+
+@if (Theme is null)
+{
+	<button class="ok-btn" disabled>Theme</button>
+}
+else
+{
+	<button class="ok-btn" @onclick="Theme.ToggleDark">
+		@(Theme.Mode == ThemeMode.Dark ? "Light" : "Dark")
+	</button>
+}
+
+@code {
+	[CascadingParameter] public ThemeController? Theme { get; set; }
+}

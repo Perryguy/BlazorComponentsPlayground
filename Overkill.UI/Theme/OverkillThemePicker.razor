@@ -1,0 +1,107 @@
+@namespace Overkill.UI
+@using Overkill.UI.Theme
+
+@if (Theme is null)
+{
+	<div class="ok-card">OverkillThemePicker must be inside <code>OverkillThemeProvider</code>.</div>
+}
+else
+{
+	<div class="ok-card" style="display:grid;gap:.75rem;">
+		<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+			<label>Mode</label>
+			<select class="ok-btn" value="@Theme.Mode.ToString()" @onchange="OnModeChange">
+				@foreach (var m in Modes)
+				{
+					<option value="@m">@m</option>
+				}
+			</select>
+			<button class="ok-btn ok-btn-outline" @onclick="Theme.ToggleDark">Toggle</button>
+		</div>
+
+		<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+			<label>Neutral</label>
+			<select class="ok-btn" value="@Theme.Neutral.ToString()" @onchange="OnNeutralChange">
+				@foreach (var n in Neutrals)
+				{
+					<option value="@n">@n</option>
+				}
+			</select>
+		</div>
+
+		<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+			<label>Brand</label>
+			<select class="ok-btn" value="@Theme.Brand.ToString()" @onchange="OnBrandChange">
+				@foreach (var b in Brands)
+				{
+					<option value="@b">@b</option>
+				}
+			</select>
+		</div>
+
+		<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+			<label>Preset</label>
+			<select class="ok-btn" value="@Theme.Preset.ToString()" @onchange="OnPresetChange">
+				@foreach (var p in Presets)
+				{
+					<option value="@p">@p</option>
+				}
+			</select>
+		</div>
+
+		<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+			<label>Density</label>
+			<select class="ok-btn" value="@Theme.Density.ToString()" @onchange="OnDensityChange">
+				@foreach (var d in Densities)
+				{
+					<option value="@d">@d</option>
+				}
+			</select>
+		</div>
+	</div>
+}
+
+@code {
+	[CascadingParameter] public ThemeController? Theme { get; set; }
+
+	private static readonly string[] Modes = Enum.GetNames(typeof(ThemeMode));
+	private static readonly string[] Brands = Enum.GetNames(typeof(BrandFamily));
+	private static readonly string[] Neutrals = Enum.GetNames(typeof(NeutralFamily));
+	private static readonly string[] Presets = Enum.GetNames(typeof(Preset));
+	private static readonly string[] Densities = Enum.GetNames(typeof(Density));
+
+	private Task OnModeChange(ChangeEventArgs e)
+	{
+		if (Enum.TryParse<ThemeMode>(Convert.ToString(e.Value), ignoreCase: true, out var m) && Theme is not null)
+			Theme.SetMode(m);
+		return Task.CompletedTask;
+	}
+
+	private Task OnBrandChange(ChangeEventArgs e)
+	{
+		if (Enum.TryParse<BrandFamily>(Convert.ToString(e.Value), ignoreCase: true, out var v) && Theme is not null)
+			Theme.SetBrand(v);
+		return Task.CompletedTask;
+	}
+
+	private Task OnNeutralChange(ChangeEventArgs e)
+	{
+		if (Enum.TryParse<NeutralFamily>(Convert.ToString(e.Value), ignoreCase: true, out var v) && Theme is not null)
+			Theme.SetNeutral(v);
+		return Task.CompletedTask;
+	}
+
+	private Task OnPresetChange(ChangeEventArgs e)
+	{
+		if (Enum.TryParse<Preset>(Convert.ToString(e.Value), ignoreCase: true, out var v) && Theme is not null)
+			Theme.SetPreset(v);
+		return Task.CompletedTask;
+	}
+
+	private Task OnDensityChange(ChangeEventArgs e)
+	{
+		if (Enum.TryParse<Density>(Convert.ToString(e.Value), ignoreCase: true, out var v) && Theme is not null)
+			Theme.SetDensity(v);
+		return Task.CompletedTask;
+	}
+}

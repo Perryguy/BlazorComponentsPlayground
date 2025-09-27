@@ -1,23 +1,33 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@using Overkill.UI
+@using Overkill.UI.Theme
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
+<OverkillThemeProvider Mode="ThemeMode.Light"
+                       Brand="BrandFamily.Orange"
+                       Neutral="NeutralFamily.Zinc"
+                       Preset="Preset.VibrantIndigo"
+                       Density="Density.None">
+
+  <header class="ok-header">
+    <div class="bar container">
+      <span class="brand"><span class="dot"></span>Overkill.UI</span>
+      <div class="spacer"></div>
+
+      <!-- Optional: quick toggle using the controller -->
+      <OverkillQuickToggle />
     </div>
+  </header>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
+  <div class="ok-shell">
+    <aside class="ok-sidebar">
+      <nav class="menu">
+        <NavLink href="/" Match="NavLinkMatch.All">Home</NavLink>
+        <NavLink href="/components">Components</NavLink>
+        <NavLink href="/theme">Theme</NavLink>
+      </nav>
+    </aside>
+    <main class="ok-content">
+      <div class="container">@Body</div>
     </main>
-</div>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+  </div>
+</OverkillThemeProvider>

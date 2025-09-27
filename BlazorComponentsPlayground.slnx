@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Overkill.TestHost/Overkill.TestHost.csproj" />
+  <Project Path="Overkill.UI.Tests/Overkill.UI.Tests.csproj" />
   <Project Path="Overkill.UI/Overkill.UI.csproj" />
 </Solution>

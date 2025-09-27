@@ -1,0 +1,79 @@
+@namespace Overkill.UI
+@using Microsoft.JSInterop
+@using Overkill.UI.Theme
+
+<CascadingValue Value="Controller" IsFixed="true">
+	<div @ref="_root" class="@ClassString" data-theme="@_resolvedTheme">
+		@ChildContent
+	</div>
+</CascadingValue>
+
+@code {
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+	// Public knobs (can also be changed via the controller at runtime)
+	[Parameter] public ThemeMode Mode { get; set; } = ThemeMode.Light;
+	[Parameter] public BrandFamily Brand { get; set; } = BrandFamily.Orange;
+	[Parameter] public NeutralFamily Neutral { get; set; } = NeutralFamily.Zinc;
+	[Parameter] public Preset Preset { get; set; } = Preset.None;
+	[Parameter] public Density Density { get; set; } = Density.None;
+	[Parameter] public string? Class { get; set; }
+
+	private ElementReference _root;
+	private string _resolvedTheme = "light";
+
+	[Inject] private IJSRuntime JS { get; set; } = default!;
+	private IJSObjectReference? _jsModule;
+
+	public ThemeController Controller = default!;
+
+	protected override void OnInitialized()
+	{
+		Controller = new ThemeController(this);
+		_resolvedTheme = Mode == ThemeMode.Dark ? "dark" : "light";
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender) return;
+
+		if (Mode == ThemeMode.System)
+		{
+			await EnsureJs();
+			_resolvedTheme = await _jsModule!.InvokeAsync<string>("getSystemMode");
+			StateHasChanged();
+			await _jsModule!.InvokeVoidAsync("subscribeSystemMode", DotNetObjectReference.Create(Controller));
+		}
+	}
+
+	private async Task EnsureJs()
+	  => _jsModule ??= await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Overkill.UI/overkill.theme.js");
+
+	internal void NotifyChanged()
+	{
+		_resolvedTheme = Mode switch
+		{
+			ThemeMode.Dark => "dark",
+			ThemeMode.Light => "light",
+			ThemeMode.System => _resolvedTheme, // updated via JS callback when system changes
+			_ => "light"
+		};
+		StateHasChanged();
+	}
+
+	internal void UpdateResolved(string mode)
+	{
+		_resolvedTheme = mode; // "light" or "dark" from JS
+		StateHasChanged();
+	}
+
+	private string ClassString => string.Join(" ", new[]
+	{
+	"ok-app","ok-theme",
+	Neutral.ToCssClass(),
+	Brand.ToCssClass(),
+	Preset.ToCssClass(),
+	Density.ToCssClass(),
+	Class
+  }.Where(s => !string.IsNullOrWhiteSpace(s)));
+}

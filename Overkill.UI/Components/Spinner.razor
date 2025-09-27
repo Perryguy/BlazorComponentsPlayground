@@ -1,0 +1,91 @@
+﻿@namespace Overkill.UI
+
+@* Optional visible labels before/after/screen-reader only *@
+@if (LabelPosition == SpinnerLabelPosition.Before)
+{
+	<span class="ok-label">@GetVisibleLabel()</span>
+}
+@if (LabelPosition == SpinnerLabelPosition.SrOnly)
+{
+	<span class="ok-sr">@GetVisibleLabel()</span>
+}
+
+<div class="ok-spinner ok-@Variant.ToString().ToLower() @(Paused ? "ok-paused" : null) @Class"
+	 style="@BuildStyleVars()"
+	 role="@Role"
+	 aria-label="@AriaLabel"
+	 aria-live="@AriaLive"
+	 aria-busy="true"
+	 data-testid="ok-spinner"
+	 @attributes="AdditionalAttributes">
+	@* Inner elements used by some variants *@
+	@if (Variant is SpinnerVariant.Dots)
+	{
+		<span class="ok-dot"></span>
+		<span class="ok-dot"></span>
+		<span class="ok-dot"></span>
+	}
+	else if (Variant is SpinnerVariant.Bars)
+	{
+		<span class="ok-bar"></span>
+		<span class="ok-bar"></span>
+		<span class="ok-bar"></span>
+		<span class="ok-bar"></span>
+		<span class="ok-bar"></span>
+	}
+</div>
+
+@if (LabelPosition == SpinnerLabelPosition.After)
+{
+	<span class="ok-label">@GetVisibleLabel()</span>
+}
+
+@code {
+
+	// ===== Appearance / theming (CSS variables) =====
+	[Parameter] public string Size { get; set; } = "2.5rem";        // width/height (e.g., "40px", "3rem")
+	[Parameter] public string? Width { get; set; }                  // overrides Size if set
+	[Parameter] public string? Height { get; set; }                 // overrides Size if set
+	[Parameter] public string Thickness { get; set; } = ".3rem";    // ring thickness
+	[Parameter] public string Color { get; set; } = "currentColor"; // spinner color
+	[Parameter] public string TrackColor { get; set; } = "rgba(0,0,0,.12)"; // background ring
+	[Parameter] public string Speed { get; set; } = "1s";           // animation duration (e.g., "0.8s")
+
+	// ===== Behavior =====
+	[Parameter] public SpinnerVariant Variant { get; set; } = SpinnerVariant.Ring;
+	[Parameter] public bool Paused { get; set; } = false;           // pause animation
+	[Parameter] public bool RespectReducedMotion { get; set; } = true; // let CSS disable motion on prefers-reduced-motion
+
+	// ===== Accessibility =====
+	[Parameter] public string Role { get; set; } = "status";        // "status" or "progressbar"
+	[Parameter] public string AriaLabel { get; set; } = "Loading";
+	[Parameter] public string? AriaLive { get; set; } = "polite";
+	[Parameter] public SpinnerLabelPosition LabelPosition { get; set; } = SpinnerLabelPosition.Hidden;
+	[Parameter] public string? VisibleLabel { get; set; }           // shown if LabelPosition != Hidden; falls back to AriaLabel
+
+	// ===== Misc / integration =====
+	[Parameter] public string? Class { get; set; }                  // extra classes for the spinner element
+	[Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+	private string GetVisibleLabel() => VisibleLabel ?? AriaLabel;
+
+	private string BuildStyleVars()
+	{
+		// Prefer explicit Width/Height if provided; otherwise use Size for both.
+		var w = string.IsNullOrWhiteSpace(Width) ? Size : Width!;
+		var h = string.IsNullOrWhiteSpace(Height) ? Size : Height!;
+
+		// Compose CSS custom properties so host apps can theme globally if they want.
+		return
+			$"--ok-size-w:{w};" +
+			$"--ok-size-h:{h};" +
+			$"--ok-thickness:{Thickness};" +
+			$"--ok-color:{Color};" +
+			$"--ok-track:{TrackColor};" +
+			$"--ok-speed:{Speed};";
+	}
+
+	// ===== Enums (kept in-component for convenience; move to a shared file if you prefer) =====
+	public enum SpinnerVariant { Ring, Dualring, Dots, Bars }
+	public enum SpinnerLabelPosition { Hidden, SrOnly, Before, After }
+}
