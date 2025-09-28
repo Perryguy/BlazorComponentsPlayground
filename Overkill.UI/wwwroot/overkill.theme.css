@@ -1,7 +1,7 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   Overkill.UI – Theme Mapping (consumes OKLCH palettes)
-   Load after: overkill.oklch-palettes.css (+ any extra palettes)
-   ─────────────────────────────────────────────────────────────────────────── */
+/* overkill.theme.tokens.css
+   Core tokens, palettes, presets, density. No component selectors.
+   Load first. Components should read tokens via CSS vars.
+*/
 
 /* ── Semantic defaults (light) ─────────────────────────────────────────────── */
 :root {
@@ -25,9 +25,19 @@
     --ok-accent: var(--ok-accent-600);
     --ok-accent-contrast: var(--ok-white);
     --ok-focus: var(--ok-indigo-600);
+    /* fields / popovers (light defaults) */
+    --ok-field-bg: var(--ok-surface);
+    --ok-field-text: var(--ok-text);
+    --ok-field-border: var(--ok-border);
+    --ok-field-placeholder: color-mix(in oklch, var(--ok-text) 50%, transparent);
+    --ok-popover-bg: color-mix(in oklch, var(--ok-surface) 96%, var(--ok-black) 4%);
+    --ok-popover-text: var(--ok-text);
+    --ok-popover-border: color-mix(in oklch, var(--ok-border) 70%, transparent);
+    --ok-popover-shadow: 0 10px 24px rgba(2,6,23,.18), 0 2px 8px rgba(2,6,23,.10);
     /* layout helpers */
     --ok-radius: 12px;
     --ok-shadow: 0 6px 24px rgba(2,6,23,.06), 0 2px 8px rgba(2,6,23,.04);
+    color-scheme: light;
 }
 
 /* ── Themed container (base tokens + header/nav tokens) ───────────────────── */
@@ -43,36 +53,12 @@
     --ok-nav-hover-bg: color-mix(in oklch, var(--ok-accent) 10%, transparent);
     --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 18%, transparent);
     --ok-nav-active-color: var(--ok-accent-contrast);
+    /* niceties */
+    --ok-radius: 14px;
+    --ok-border-soft: color-mix(in oklch, var(--ok-border) 55%, transparent);
+    --ok-surface-veil: var(--ok-surface); /* overridden by glass presets & density */
+    --ok-glass-blur: none; /* overridden by glass presets */
 }
-
-    /* Theme-aware elements */
-    .ok-theme a {
-        color: var(--ok-accent);
-        text-decoration: none;
-        /* fancy underline */
-        background-image: linear-gradient(currentColor, currentColor);
-        background-size: 0 2px;
-        background-repeat: no-repeat;
-        background-position: 0 100%;
-        transition: background-size .2s ease;
-    }
-
-        .ok-theme a:hover {
-            background-size: 100% 2px;
-        }
-
-    /* Base card (polished) */
-    .ok-theme .ok-card {
-        background: var(--ok-surface);
-        border: 1px solid var(--ok-border);
-        border-radius: var(--ok-radius);
-        box-shadow: var(--ok-shadow);
-    }
-
-    /* Spinner inherits brand */
-    .ok-theme .ok-spinner {
-        color: var(--ok-accent);
-    }
 
     /* ── Dark overrides ───────────────────────────────────────────────────────── */
     .ok-theme[data-theme="dark"] {
@@ -81,16 +67,25 @@
         --ok-text: var(--ok-gray-50);
         --ok-muted: var(--ok-zinc-400);
         --ok-border: var(--ok-zinc-800);
-        --ok-accent: var(--ok-accent-300); /* brighter brand on dark */
+        --ok-accent: var(--ok-accent-300);
         --ok-accent-contrast: var(--ok-black);
         --ok-shadow: 0 6px 24px rgba(0,0,0,.40), 0 2px 8px rgba(0,0,0,.35);
+        /* fields/popovers in dark: keep darker (do NOT wash out) */
+        --ok-field-bg: color-mix(in oklch, var(--ok-surface) 86%, var(--ok-black) 14%);
+        --ok-field-text: var(--ok-text);
+        --ok-field-border: color-mix(in oklch, var(--ok-border) 70%, transparent);
+        --ok-field-placeholder: color-mix(in oklch, var(--ok-text) 40%, transparent);
+        --ok-popover-bg: color-mix(in oklch, var(--ok-surface) 78%, var(--ok-black) 22%);
+        --ok-popover-text: var(--ok-text);
+        --ok-popover-border: color-mix(in oklch, var(--ok-border) 60%, transparent);
+        --ok-popover-shadow: 0 14px 36px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.35);
+        color-scheme: dark;
     }
 
 /* ───────────────────────────────────────────────────────────────────────────
    BRAND PRESETS (map any family to --ok-accent-* scale)
    Apply on the same element that has .ok-theme
    ─────────────────────────────────────────────────────────────────────────── */
-
 .ok-brand-neutral {
     --ok-accent-50: var(--ok-neutral-50);
     --ok-accent-100: var(--ok-neutral-100);
@@ -106,81 +101,7 @@
     --ok-accent: var(--ok-accent-600);
 }
 
-.ok-brand-stone {
-    --ok-accent-50: var(--ok-stone-50);
-    --ok-accent-100: var(--ok-stone-100);
-    --ok-accent-200: var(--ok-stone-200);
-    --ok-accent-300: var(--ok-stone-300);
-    --ok-accent-400: var(--ok-stone-400);
-    --ok-accent-500: var(--ok-stone-500);
-    --ok-accent-600: var(--ok-stone-600);
-    --ok-accent-700: var(--ok-stone-700);
-    --ok-accent-800: var(--ok-stone-800);
-    --ok-accent-900: var(--ok-stone-900);
-    --ok-accent-950: var(--ok-stone-950);
-    --ok-accent: var(--ok-accent-600);
-}
-
-.ok-brand-zinc {
-    --ok-accent-50: var(--ok-zinc-50);
-    --ok-accent-100: var(--ok-zinc-100);
-    --ok-accent-200: var(--ok-zinc-200);
-    --ok-accent-300: var(--ok-zinc-300);
-    --ok-accent-400: var(--ok-zinc-400);
-    --ok-accent-500: var(--ok-zinc-500);
-    --ok-accent-600: var(--ok-zinc-600);
-    --ok-accent-700: var(--ok-zinc-700);
-    --ok-accent-800: var(--ok-zinc-800);
-    --ok-accent-900: var(--ok-zinc-900);
-    --ok-accent-950: var(--ok-zinc-950);
-    --ok-accent: var(--ok-accent-600);
-}
-
-.ok-brand-slate {
-    --ok-accent-50: var(--ok-slate-50);
-    --ok-accent-100: var(--ok-slate-100);
-    --ok-accent-200: var(--ok-slate-200);
-    --ok-accent-300: var(--ok-slate-300);
-    --ok-accent-400: var(--ok-slate-400);
-    --ok-accent-500: var(--ok-slate-500);
-    --ok-accent-600: var(--ok-slate-600);
-    --ok-accent-700: var(--ok-slate-700);
-    --ok-accent-800: var(--ok-slate-800);
-    --ok-accent-900: var(--ok-slate-900);
-    --ok-accent-950: var(--ok-slate-950);
-    --ok-accent: var(--ok-accent-600);
-}
-
-.ok-brand-gray {
-    --ok-accent-50: var(--ok-gray-50);
-    --ok-accent-100: var(--ok-gray-100);
-    --ok-accent-200: var(--ok-gray-200);
-    --ok-accent-300: var(--ok-gray-300);
-    --ok-accent-400: var(--ok-gray-400);
-    --ok-accent-500: var(--ok-gray-500);
-    --ok-accent-600: var(--ok-gray-600);
-    --ok-accent-700: var(--ok-gray-700);
-    --ok-accent-800: var(--ok-gray-800);
-    --ok-accent-900: var(--ok-gray-900);
-    --ok-accent-950: var(--ok-gray-950);
-    --ok-accent: var(--ok-accent-600);
-}
-
-.ok-brand-red {
-    --ok-accent-50: var(--ok-red-50);
-    --ok-accent-100: var(--ok-red-100);
-    --ok-accent-200: var(--ok-red-200);
-    --ok-accent-300: var(--ok-red-300);
-    --ok-accent-400: var(--ok-red-400);
-    --ok-accent-500: var(--ok-red-500);
-    --ok-accent-600: var(--ok-red-600);
-    --ok-accent-700: var(--ok-red-700);
-    --ok-accent-800: var(--ok-red-800);
-    --ok-accent-900: var(--ok-red-900);
-    --ok-accent-950: var(--ok-red-950);
-    --ok-accent: var(--ok-accent-600);
-}
-
+/* Brand families (continue pattern) */
 .ok-brand-orange {
     --ok-accent-50: var(--ok-orange-50);
     --ok-accent-100: var(--ok-orange-100);
@@ -421,77 +342,82 @@
     --ok-accent: var(--ok-accent-600);
 }
 
-/* Dark tweak for any brand: lift accent ramp */
-.ok-theme[data-theme="dark"].ok-brand-neutral,
-.ok-theme[data-theme="dark"].ok-brand-stone,
-.ok-theme[data-theme="dark"].ok-brand-zinc,
-.ok-theme[data-theme="dark"].ok-brand-slate,
-.ok-theme[data-theme="dark"].ok-brand-gray,
-.ok-theme[data-theme="dark"].ok-brand-red,
-.ok-theme[data-theme="dark"].ok-brand-orange,
-.ok-theme[data-theme="dark"].ok-brand-amber,
-.ok-theme[data-theme="dark"].ok-brand-yellow,
-.ok-theme[data-theme="dark"].ok-brand-lime,
-.ok-theme[data-theme="dark"].ok-brand-green,
-.ok-theme[data-theme="dark"].ok-brand-emerald,
-.ok-theme[data-theme="dark"].ok-brand-teal,
-.ok-theme[data-theme="dark"].ok-brand-cyan,
-.ok-theme[data-theme="dark"].ok-brand-sky,
-.ok-theme[data-theme="dark"].ok-brand-blue,
-.ok-theme[data-theme="dark"].ok-brand-indigo,
-.ok-theme[data-theme="dark"].ok-brand-violet,
-.ok-theme[data-theme="dark"].ok-brand-purple,
-.ok-theme[data-theme="dark"].ok-brand-fuchsia,
-.ok-theme[data-theme="dark"].ok-brand-pink,
-.ok-theme[data-theme="dark"].ok-brand-rose {
-    --ok-accent: var(--ok-accent-300);
+.ok-brand-stone {
+    --ok-accent-50: var(--ok-stone-50);
+    --ok-accent-100: var(--ok-stone-100);
+    --ok-accent-200: var(--ok-stone-200);
+    --ok-accent-300: var(--ok-stone-300);
+    --ok-accent-400: var(--ok-stone-400);
+    --ok-accent-500: var(--ok-stone-500);
+    --ok-accent-600: var(--ok-stone-600);
+    --ok-accent-700: var(--ok-stone-700);
+    --ok-accent-800: var(--ok-stone-800);
+    --ok-accent-900: var(--ok-stone-900);
+    --ok-accent-950: var(--ok-stone-950);
+    --ok-accent: var(--ok-accent-600);
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   NEUTRAL PRESETS (choose which family drives surfaces)
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.ok-neutral-neutral {
-    --ok-bg: var(--ok-neutral-50);
-    --ok-surface: var(--ok-white);
-    --ok-text: var(--ok-neutral-800);
-    --ok-muted: var(--ok-neutral-600);
-    --ok-border: var(--ok-neutral-200);
+.ok-brand-zinc {
+    --ok-accent-50: var(--ok-zinc-50);
+    --ok-accent-100: var(--ok-zinc-100);
+    --ok-accent-200: var(--ok-zinc-200);
+    --ok-accent-300: var(--ok-zinc-300);
+    --ok-accent-400: var(--ok-zinc-400);
+    --ok-accent-500: var(--ok-zinc-500);
+    --ok-accent-600: var(--ok-zinc-600);
+    --ok-accent-700: var(--ok-zinc-700);
+    --ok-accent-800: var(--ok-zinc-800);
+    --ok-accent-900: var(--ok-zinc-900);
+    --ok-accent-950: var(--ok-zinc-950);
+    --ok-accent: var(--ok-accent-600);
 }
 
-.ok-neutral-stone {
-    --ok-bg: var(--ok-stone-50);
-    --ok-surface: var(--ok-white);
-    --ok-text: var(--ok-stone-800);
-    --ok-muted: var(--ok-stone-600);
-    --ok-border: var(--ok-stone-200);
+.ok-brand-slate {
+    --ok-accent-50: var(--ok-slate-50);
+    --ok-accent-100: var(--ok-slate-100);
+    --ok-accent-200: var(--ok-slate-200);
+    --ok-accent-300: var(--ok-slate-300);
+    --ok-accent-400: var(--ok-slate-400);
+    --ok-accent-500: var(--ok-slate-500);
+    --ok-accent-600: var(--ok-slate-600);
+    --ok-accent-700: var(--ok-slate-700);
+    --ok-accent-800: var(--ok-slate-800);
+    --ok-accent-900: var(--ok-slate-900);
+    --ok-accent-950: var(--ok-slate-950);
+    --ok-accent: var(--ok-accent-600);
 }
 
-.ok-neutral-zinc {
-    --ok-bg: var(--ok-zinc-50);
-    --ok-surface: var(--ok-white);
-    --ok-text: var(--ok-zinc-800);
-    --ok-muted: var(--ok-zinc-600);
-    --ok-border: var(--ok-zinc-200);
+.ok-brand-gray {
+    --ok-accent-50: var(--ok-gray-50);
+    --ok-accent-100: var(--ok-gray-100);
+    --ok-accent-200: var(--ok-gray-200);
+    --ok-accent-300: var(--ok-gray-300);
+    --ok-accent-400: var(--ok-gray-400);
+    --ok-accent-500: var(--ok-gray-500);
+    --ok-accent-600: var(--ok-gray-600);
+    --ok-accent-700: var(--ok-gray-700);
+    --ok-accent-800: var(--ok-gray-800);
+    --ok-accent-900: var(--ok-gray-900);
+    --ok-accent-950: var(--ok-gray-950);
+    --ok-accent: var(--ok-accent-600);
 }
 
-.ok-neutral-slate {
-    --ok-bg: var(--ok-slate-50);
-    --ok-surface: var(--ok-white);
-    --ok-text: var(--ok-slate-800);
-    --ok-muted: var(--ok-slate-600);
-    --ok-border: var(--ok-slate-200);
+.ok-brand-red {
+    --ok-accent-50: var(--ok-red-50);
+    --ok-accent-100: var(--ok-red-100);
+    --ok-accent-200: var(--ok-red-200);
+    --ok-accent-300: var(--ok-red-300);
+    --ok-accent-400: var(--ok-red-400);
+    --ok-accent-500: var(--ok-red-500);
+    --ok-accent-600: var(--ok-red-600);
+    --ok-accent-700: var(--ok-red-700);
+    --ok-accent-800: var(--ok-red-800);
+    --ok-accent-900: var(--ok-red-900);
+    --ok-accent-950: var(--ok-red-950);
+    --ok-accent: var(--ok-accent-600);
 }
+/* …other brand families follow the same pattern if needed … */
 
-.ok-neutral-gray {
-    --ok-bg: var(--ok-gray-50);
-    --ok-surface: var(--ok-white);
-    --ok-text: var(--ok-gray-800);
-    --ok-muted: var(--ok-gray-600);
-    --ok-border: var(--ok-gray-200);
-}
-
-/* extras (if you included extra-neutrals file) */
 .ok-neutral-graphite {
     --ok-bg: var(--ok-graphite-50);
     --ok-surface: var(--ok-white);
@@ -548,21 +474,74 @@
     --ok-border: var(--ok-cocoa-200);
 }
 
-/* dark variants for all above */
-.ok-theme[data-theme="dark"].ok-neutral-neutral {
-    --ok-bg: var(--ok-neutral-900);
-    --ok-surface: var(--ok-neutral-800);
-    --ok-text: var(--ok-neutral-50);
-    --ok-muted: var(--ok-neutral-400);
-    --ok-border: var(--ok-neutral-800);
+
+/* Dark tweak for any brand: lift accent ramp */
+.ok-theme[data-theme="dark"].ok-brand-neutral,
+.ok-theme[data-theme="dark"].ok-brand-stone,
+.ok-theme[data-theme="dark"].ok-brand-zinc,
+.ok-theme[data-theme="dark"].ok-brand-slate,
+.ok-theme[data-theme="dark"].ok-brand-gray,
+.ok-theme[data-theme="dark"].ok-brand-red,
+.ok-theme[data-theme="dark"].ok-brand-orange,
+.ok-theme[data-theme="dark"].ok-brand-amber,
+.ok-theme[data-theme="dark"].ok-brand-yellow,
+.ok-theme[data-theme="dark"].ok-brand-lime,
+.ok-theme[data-theme="dark"].ok-brand-green,
+.ok-theme[data-theme="dark"].ok-brand-emerald,
+.ok-theme[data-theme="dark"].ok-brand-teal,
+.ok-theme[data-theme="dark"].ok-brand-cyan,
+.ok-theme[data-theme="dark"].ok-brand-sky,
+.ok-theme[data-theme="dark"].ok-brand-blue,
+.ok-theme[data-theme="dark"].ok-brand-indigo,
+.ok-theme[data-theme="dark"].ok-brand-violet,
+.ok-theme[data-theme="dark"].ok-brand-purple,
+.ok-theme[data-theme="dark"].ok-brand-fuchsia,
+.ok-theme[data-theme="dark"].ok-brand-pink,
+.ok-theme[data-theme="dark"].ok-brand-rose {
+    --ok-accent: var(--ok-accent-300);
 }
 
-.ok-theme[data-theme="dark"].ok-neutral-stone {
-    --ok-bg: var(--ok-stone-900);
-    --ok-surface: var(--ok-stone-800);
-    --ok-text: var(--ok-stone-50);
-    --ok-muted: var(--ok-stone-400);
-    --ok-border: var(--ok-stone-800);
+/* ───────────────────────────────────────────────────────────────────────────
+   NEUTRAL PRESETS (subset)
+   ─────────────────────────────────────────────────────────────────────────── */
+.ok-neutral-zinc {
+    --ok-bg: var(--ok-zinc-50);
+    --ok-surface: var(--ok-white);
+    --ok-text: var(--ok-zinc-800);
+    --ok-muted: var(--ok-zinc-600);
+    --ok-border: var(--ok-zinc-200);
+}
+
+.ok-neutral-slate {
+    --ok-bg: var(--ok-slate-50);
+    --ok-surface: var(--ok-white);
+    --ok-text: var(--ok-slate-800);
+    --ok-muted: var(--ok-slate-600);
+    --ok-border: var(--ok-slate-200);
+}
+
+.ok-neutral-gray {
+    --ok-bg: var(--ok-gray-50);
+    --ok-surface: var(--ok-white);
+    --ok-text: var(--ok-gray-800);
+    --ok-muted: var(--ok-gray-600);
+    --ok-border: var(--ok-gray-200);
+}
+
+.ok-neutral-stone {
+    --ok-bg: var(--ok-stone-50);
+    --ok-surface: var(--ok-white);
+    --ok-text: var(--ok-stone-800);
+    --ok-muted: var(--ok-stone-600);
+    --ok-border: var(--ok-stone-200);
+}
+
+.ok-neutral-neutral {
+    --ok-bg: var(--ok-neutral-50);
+    --ok-surface: var(--ok-white);
+    --ok-text: var(--ok-neutral-800);
+    --ok-muted: var(--ok-neutral-600);
+    --ok-border: var(--ok-neutral-200);
 }
 
 .ok-theme[data-theme="dark"].ok-neutral-zinc {
@@ -587,6 +566,22 @@
     --ok-text: var(--ok-gray-50);
     --ok-muted: var(--ok-gray-400);
     --ok-border: var(--ok-gray-800);
+}
+
+.ok-theme[data-theme="dark"].ok-neutral-stone {
+    --ok-bg: var(--ok-stone-900);
+    --ok-surface: var(--ok-stone-800);
+    --ok-text: var(--ok-stone-50);
+    --ok-muted: var(--ok-stone-400);
+    --ok-border: var(--ok-stone-800);
+}
+
+.ok-theme[data-theme="dark"].ok-neutral-neutral {
+    --ok-bg: var(--ok-neutral-900);
+    --ok-surface: var(--ok-neutral-800);
+    --ok-text: var(--ok-neutral-50);
+    --ok-muted: var(--ok-neutral-400);
+    --ok-border: var(--ok-neutral-800);
 }
 
 .ok-theme[data-theme="dark"].ok-neutral-graphite {
@@ -646,41 +641,9 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   DENSITY HELPERS (deepen surfaces; apply on same element as .ok-theme)
+   PROFESSIONAL / GLASS PRESETS (subset)
    ─────────────────────────────────────────────────────────────────────────── */
-
-.ok-theme.ok-density-100 {
-    --ok-surface: color-mix(in oklch, var(--ok-surface) 92%, var(--ok-black) 8%);
-}
-
-.ok-theme.ok-density-200 {
-    --ok-surface: color-mix(in oklch, var(--ok-surface) 86%, var(--ok-black) 14%);
-}
-
-.ok-theme.ok-density-300 {
-    --ok-surface: color-mix(in oklch, var(--ok-surface) 80%, var(--ok-black) 20%);
-}
-
-.ok-theme[data-theme="dark"].ok-density-100 {
-    --ok-surface: color-mix(in oklch, var(--ok-surface) 92%, var(--ok-white) 8%);
-}
-
-.ok-theme[data-theme="dark"].ok-density-200 {
-    --ok-surface: color-mix(in oklch, var(--ok-surface) 86%, var(--ok-white) 14%);
-}
-
-.ok-theme[data-theme="dark"].ok-density-300 {
-    --ok-surface: color-mix(in oklch, var(--ok-surface) 80%, var(--ok-white) 20%);
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   PROFESSIONAL PRESETS (header/nav tokens overridden too)
-   Apply: class="ok-theme ok-preset-…"
-   ─────────────────────────────────────────────────────────────────────────── */
-
-/* PRO SLATE */
 .ok-theme.ok-preset-pro-slate {
-    /* light */
     --ok-bg: linear-gradient(180deg, oklch(98% 0 0), oklch(96% 0.004 250));
     --ok-surface: var(--ok-white);
     --ok-header-bg: color-mix(in oklch, var(--ok-surface) 90%, var(--ok-slate-50) 10%);
@@ -698,7 +661,6 @@
         --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 22%, transparent);
     }
 
-/* MIDNIGHT GLASS */
 .ok-theme.ok-preset-midnight-glass {
     --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 88%, transparent);
     --ok-glass-blur: blur(8px);
@@ -709,12 +671,71 @@
         --ok-surface: oklch(22% 0.03 265);
         --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 74%, transparent);
         --ok-glass-blur: blur(12px);
-        /* darker header/sidebar */
         --ok-header-bg: color-mix(in oklch, var(--ok-surface) 70%, var(--ok-black) 30%);
         --ok-sidebar-bg: color-mix(in oklch, var(--ok-surface) 78%, var(--ok-black) 22%);
         --ok-nav-hover-bg: color-mix(in oklch, var(--ok-accent) 15%, transparent);
         --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 26%, transparent);
     }
+
+.ok-theme.ok-preset-vibrant-indigo {
+    --ok-bg: linear-gradient(180deg, oklch(98% 0 0), oklch(96% 0.010 255));
+    --ok-surface: var(--ok-white);
+    --ok-header-bg: color-mix(in oklch, var(--ok-surface) 92%, var(--ok-indigo-50) 8%);
+    --ok-sidebar-bg: var(--ok-surface);
+    --ok-nav-hover-bg: color-mix(in oklch, var(--ok-indigo-300) 16%, transparent);
+    --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 16%, transparent);
+}
+
+    .ok-theme.ok-preset-vibrant-indigo[data-theme="dark"] {
+        --ok-bg: linear-gradient(135deg, oklch(28% 0.14 300), oklch(30% 0.14 250));
+        --ok-surface: oklch(22% 0.04 265);
+        --ok-header-bg: color-mix(in oklch, var(--ok-surface) 70%, var(--ok-black) 30%);
+        --ok-sidebar-bg: color-mix(in oklch, var(--ok-surface) 78%, var(--ok-black) 22%);
+        --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 86%, transparent);
+        --ok-glass-blur: blur(8px);
+        --ok-nav-hover-bg: color-mix(in oklch, var(--ok-accent) 15%, transparent);
+        --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 26%, transparent);
+    }
+
+.ok-theme.ok-preset-glass-teal {
+    --ok-bg: linear-gradient(140deg, oklch(96% 0.010 205), oklch(94% 0.012 200));
+    --ok-surface: var(--ok-white);
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 92%, transparent);
+    --ok-glass-blur: blur(6px);
+    --ok-header-bg: color-mix(in oklch, var(--ok-surface) 92%, var(--ok-cyan-50) 8%);
+    --ok-sidebar-bg: var(--ok-surface);
+    --ok-nav-hover-bg: color-mix(in oklch, var(--ok-cyan-300) 14%, transparent);
+    --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 16%, transparent);
+}
+
+    .ok-theme.ok-preset-glass-teal[data-theme="dark"] {
+        --ok-bg: linear-gradient(140deg, oklch(30% 0.12 200), oklch(32% 0.14 205));
+        --ok-surface: oklch(22% 0.03 210);
+        --ok-header-bg: color-mix(in oklch, var(--ok-surface) 78%, var(--ok-black) 22%);
+        --ok-sidebar-bg: color-mix(in oklch, var(--ok-surface) 84%, var(--ok-black) 16%);
+        --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 75%, transparent);
+        --ok-glass-blur: blur(12px);
+        --ok-nav-hover-bg: color-mix(in oklch, var(--ok-accent) 15%, transparent);
+        --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 26%, transparent);
+    }
+
+/* PAPER TINT (light only) – includes alias without 'preset' */
+.ok-theme.ok-paper-tint,
+.ok-theme.ok-preset-paper-tint {
+    --ok-bg: color-mix(in oklch, var(--ok-white) 96%, var(--ok-accent) 4%);
+    --ok-border: color-mix(in oklch, var(--ok-zinc-200) 80%, var(--ok-accent) 20%);
+}
+
+/* TURBO SUNSET (dramatic dark) */
+.ok-theme.ok-preset-turbo-sunset[data-theme="dark"] {
+    --ok-bg: linear-gradient(135deg, oklch(32% 0.20 50), oklch(30% 0.18 305));
+    --ok-surface: oklch(23% 0.03 270);
+    --ok-text: oklch(94% 0.006 265);
+    --ok-muted: var(--ok-zinc-400);
+    --ok-border: var(--ok-zinc-800);
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 88%, transparent);
+    --ok-shadow: 0 10px 32px rgba(0,0,0,.48), 0 2px 10px rgba(0,0,0,.36);
+}
 
 /* COBALT WAVE */
 .ok-theme.ok-preset-cobalt-wave {
@@ -762,99 +783,81 @@
         --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 22%, transparent);
     }
 
-/* TURBO SUNSET (dramatic dark) */
-.ok-theme.ok-preset-turbo-sunset[data-theme="dark"] {
-    --ok-bg: linear-gradient(135deg, oklch(32% 0.20 50), oklch(30% 0.18 305));
-    --ok-surface: oklch(23% 0.03 270);
-    --ok-text: oklch(94% 0.006 265);
-    --ok-muted: var(--ok-zinc-400);
-    --ok-border: var(--ok-zinc-800);
-    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 88%, transparent);
-    --ok-shadow: 0 10px 32px rgba(0,0,0,.48), 0 2px 10px rgba(0,0,0,.36);
-}
-
-/* PAPER TINT (light only) – includes alias without 'preset' */
-.ok-theme.ok-paper-tint,
-.ok-theme.ok-preset-paper-tint {
-    --ok-bg: color-mix(in oklch, var(--ok-white) 96%, var(--ok-accent) 4%);
-    --ok-border: color-mix(in oklch, var(--ok-zinc-200) 80%, var(--ok-accent) 20%);
-}
-
-/* Vibrant Indigo – LIGHT */
-.ok-theme.ok-preset-vibrant-indigo {
-    --ok-bg: linear-gradient(180deg, oklch(98% 0 0), oklch(96% 0.010 255)); /* faint indigo paper */
-    --ok-surface: var(--ok-white);
-    /* Header / Sidebar get a subtle indigo tint */
-    --ok-header-bg: color-mix(in oklch, var(--ok-surface) 92%, var(--ok-indigo-50) 8%);
-    --ok-sidebar-bg: var(--ok-surface);
-    /* Nav feedback */
-    --ok-nav-hover-bg: color-mix(in oklch, var(--ok-indigo-300) 16%, transparent);
-    --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 16%, transparent);
-}
-    /* Vibrant Indigo – DARK */
-    .ok-theme.ok-preset-vibrant-indigo[data-theme="dark"] {
-        --ok-bg: linear-gradient(135deg, oklch(28% 0.14 300), oklch(30% 0.14 250));
-        --ok-surface: oklch(22% 0.04 265);
-        --ok-text: oklch(94% 0.006 265);
-        --ok-muted: var(--ok-zinc-400);
-        --ok-border: var(--ok-zinc-800);
-        /* glassy cards */
-        --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 86%, transparent);
-        --ok-glass-blur: blur(8px);
-        --ok-shadow: 0 8px 28px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
-        /* Header / Sidebar darker than content for depth */
-        --ok-header-bg: color-mix(in oklch, var(--ok-surface) 70%, var(--ok-black) 30%);
-        --ok-sidebar-bg: color-mix(in oklch, var(--ok-surface) 78%, var(--ok-black) 22%);
-        /* Nav feedback on dark */
-        --ok-nav-hover-bg: color-mix(in oklch, var(--ok-accent) 15%, transparent);
-        --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 26%, transparent);
-    }
-
-/* Glass Teal – LIGHT */
-.ok-theme.ok-preset-glass-teal {
-    --ok-bg: linear-gradient(140deg, oklch(96% 0.010 205), oklch(94% 0.012 200)); /* soft teal paper */
-    --ok-surface: var(--ok-white);
-    /* subtle glass */
-    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 92%, transparent);
-    --ok-glass-blur: blur(6px);
-    /* header / sidebar tint */
-    --ok-header-bg: color-mix(in oklch, var(--ok-surface) 92%, var(--ok-cyan-50) 8%);
-    --ok-sidebar-bg: var(--ok-surface);
-    /* nav feedback */
-    --ok-nav-hover-bg: color-mix(in oklch, var(--ok-cyan-300) 14%, transparent);
-    --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 16%, transparent);
-}
-    /* Glass Teal – DARK */
-    .ok-theme.ok-preset-glass-teal[data-theme="dark"] {
-        --ok-bg: linear-gradient(140deg, oklch(30% 0.12 200), oklch(32% 0.14 205));
-        --ok-surface: oklch(22% 0.03 210);
-        --ok-text: oklch(95% 0.006 210);
-        --ok-muted: var(--ok-zinc-400);
-        --ok-border: var(--ok-zinc-800);
-        /* stronger glass */
-        --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 75%, transparent);
-        --ok-glass-blur: blur(12px);
-        --ok-shadow: 0 12px 36px rgba(0,0,0,.5), 0 3px 12px rgba(0,0,0,.38);
-        /* header / sidebar darker than content */
-        --ok-header-bg: color-mix(in oklch, var(--ok-surface) 78%, var(--ok-black) 22%);
-        --ok-sidebar-bg: color-mix(in oklch, var(--ok-surface) 84%, var(--ok-black) 16%);
-        /* nav feedback */
-        --ok-nav-hover-bg: color-mix(in oklch, var(--ok-accent) 15%, transparent);
-        --ok-nav-active-bg: color-mix(in oklch, var(--ok-accent) 26%, transparent);
-    }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   Shared niceties (applied by presets or base)
+   DENSITY HELPERS – deepen surfaces via surface-veil.
+   Place AFTER presets so last-in-wins.
    ─────────────────────────────────────────────────────────────────────────── */
-
-.ok-theme {
-    --ok-radius: 14px;
-    --ok-border-soft: color-mix(in oklch, var(--ok-border) 55%, transparent);
-    --ok-surface-veil: var(--ok-surface); /* overridden by glass presets */
-    --ok-glass-blur: none; /* overridden by glass presets */
+.ok-theme.ok-density-100 {
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 88%, var(--ok-black) 12%);
 }
 
-    /* Card polish (overrides base card above if both present) */
+.ok-theme.ok-density-200 {
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 78%, var(--ok-black) 22%);
+}
+
+.ok-theme.ok-density-300 {
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 68%, var(--ok-black) 32%);
+}
+
+.ok-theme[data-theme="dark"].ok-density-100 {
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 90%, var(--ok-black) 10%);
+}
+
+.ok-theme[data-theme="dark"].ok-density-200 {
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 82%, var(--ok-black) 18%);
+}
+
+.ok-theme[data-theme="dark"].ok-density-300 {
+    --ok-surface-veil: color-mix(in oklch, var(--ok-surface) 74%, var(--ok-black) 26%);
+}
+
+/* Optionally include header/sidebar in density */
+.ok-theme.ok-density-affects-nav {
+    --ok-header-bg: var(--ok-surface-veil);
+    --ok-sidebar-bg: var(--ok-surface-veil);
+}
+
+/* Ensure popovers/menus track density by default */
+.ok-theme {
+    --ok-popover-bg: var(--ok-surface-veil);
+    --ok-popover-border: var(--ok-border);
+}
+
+/* Final safety: enforce color-scheme per theme */
+.ok-theme {
+    color-scheme: light;
+}
+
+    .ok-theme[data-theme="dark"] {
+        color-scheme: dark;
+    }
+
+
+
+
+
+    /* 
+   Component styles (cards, buttons, fields, menus). Co-locate or import per component.
+   Reads from theme tokens only. Safe to tree-shake.
+*/
+
+    /* Links */
+    .ok-theme a {
+        color: var(--ok-accent);
+        text-decoration: none;
+        background-image: linear-gradient(currentColor, currentColor);
+        background-size: 0 2px;
+        background-repeat: no-repeat;
+        background-position: 0 100%;
+        transition: background-size .2s ease;
+    }
+
+        .ok-theme a:hover {
+            background-size: 100% 2px;
+        }
+
+    /* Card */
     .ok-theme .ok-card {
         background: var(--ok-surface-veil);
         border: 1px solid var(--ok-border-soft);
@@ -863,46 +866,127 @@
         backdrop-filter: var(--ok-glass-blur);
     }
 
-    /* Buttons */
-    .ok-theme .ok-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: .5rem;
-        padding: .5rem .9rem;
-        border-radius: .5rem;
-        border: 1px solid var(--ok-border);
-        background: var(--ok-surface);
-        color: var(--ok-text);
-        cursor: pointer;
-        transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
-    }
-
-        .ok-theme .ok-btn:focus {
-            outline: 2px solid var(--ok-focus);
-            outline-offset: 2px;
-        }
-
-        .ok-theme .ok-btn:hover {
-            transform: translateY(-1px);
-        }
-
-    .ok-theme .ok-btn-primary {
-        background: var(--ok-accent);
-        color: var(--ok-accent-contrast);
-        border-color: color-mix(in oklch, var(--ok-accent) 62%, var(--ok-black));
-        box-shadow: 0 1px 2px rgba(0,0,0,.08);
-    }
-
-        .ok-theme .ok-btn-primary:hover {
-            box-shadow: 0 6px 18px color-mix(in oklch, var(--ok-accent) 28%, transparent);
-        }
-
-    .ok-theme .ok-btn-outline {
+    /* Spinner */
+    .ok-theme .ok-spinner {
         color: var(--ok-accent);
-        border-color: var(--ok-accent);
-        background: transparent;
     }
 
-        .ok-theme .ok-btn-outline:hover {
-            background: color-mix(in oklch, var(--ok-accent) 12%, transparent);
+    /* FORM CONTROLS & DROPDOWNS */
+    .ok-theme input[type="text"],
+    .ok-theme input[type="search"],
+    .ok-theme input[type="email"],
+    .ok-theme input[type="password"],
+    .ok-theme input[type="number"],
+    .ok-theme textarea,
+    .ok-theme select {
+        -webkit-appearance: none;
+        appearance: none;
+        background: var(--ok-field-bg);
+        color: var(--ok-field-text);
+        border: 1px solid var(--ok-field-border);
+        border-radius: .5rem;
+        padding: .5rem .75rem;
+        outline: none;
+        transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+
+        .ok-theme input::placeholder,
+        .ok-theme textarea::placeholder {
+            color: var(--ok-field-placeholder);
         }
+
+        .ok-theme input:focus,
+        .ok-theme textarea:focus,
+        .ok-theme select:focus {
+            border-color: var(--ok-field-focus, var(--ok-focus));
+            box-shadow: 0 0 0 3px color-mix(in oklch, var(--ok-field-focus, var(--ok-focus)) 30%, transparent);
+        }
+
+    /* Native select chevron */
+    .ok-theme select {
+        background-image: linear-gradient(45deg, transparent 45%, currentColor 45%), linear-gradient(-45deg, transparent 45%, currentColor 45%);
+        background-position: right .9rem center, right .6rem center;
+        background-size: .45em .45em, .45em .45em;
+        background-repeat: no-repeat;
+        padding-right: 2rem;
+    }
+
+        /* Native dropdown list (options) – browser support varies */
+        .ok-theme select option,
+        .ok-theme select optgroup {
+            background: var(--ok-popover-bg);
+            color: var(--ok-popover-text);
+        }
+
+/* Custom listboxes/menus */
+@supports selector(:has(+ *)) {
+    .ok-theme [role="listbox"],
+    .ok-theme .ok-popover,
+    .ok-theme .ok-menu,
+    .ok-theme .ok-dropdown,
+    .ok-theme .ok-dropdown-menu {
+        background: var(--ok-popover-bg);
+        color: var(--ok-popover-text);
+        border: 1px solid var(--ok-popover-border);
+        border-radius: .5rem;
+        box-shadow: var(--ok-popover-shadow);
+        backdrop-filter: var(--ok-glass-blur);
+    }
+}
+
+/* Menu items */
+.ok-theme .ok-menuitem,
+.ok-theme [role="option"] {
+    padding: .5rem .75rem;
+    cursor: pointer;
+}
+
+    .ok-theme .ok-menuitem:hover,
+    .ok-theme [role="option"][aria-selected="true"],
+    .ok-theme [role="option"]:hover {
+        background: color-mix(in oklch, var(--ok-accent) 14%, transparent);
+    }
+
+/* Buttons */
+.ok-theme .ok-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem .9rem;
+    border-radius: .5rem;
+    border: 1px solid var(--ok-border);
+    background: var(--ok-surface-veil);
+    color: var(--ok-text);
+    cursor: pointer;
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+
+    .ok-theme .ok-btn:focus {
+        outline: 2px solid var(--ok-focus);
+        outline-offset: 2px;
+    }
+
+    .ok-theme .ok-btn:hover {
+        transform: translateY(-1px);
+    }
+
+.ok-theme .ok-btn-primary {
+    background: var(--ok-accent);
+    color: var(--ok-accent-contrast);
+    border-color: color-mix(in oklch, var(--ok-accent) 62%, var(--ok-black));
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+
+    .ok-theme .ok-btn-primary:hover {
+        box-shadow: 0 6px 18px color-mix(in oklch, var(--ok-accent) 28%, transparent);
+    }
+
+.ok-theme .ok-btn-outline {
+    color: var(--ok-accent);
+    border-color: var(--ok-accent);
+    background: transparent;
+}
+
+    .ok-theme .ok-btn-outline:hover {
+        background: color-mix(in oklch, var(--ok-accent) 12%, transparent);
+    }

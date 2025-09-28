@@ -1,5 +1,6 @@
 /* Overkill.UI – OKLCH Color Palettes (50–950) */
 :root {
+    --ok-black: oklch(0 0 260);
     --ok-neutral-50: oklch(98.50% 0.0000 260.0);
     --ok-neutral-100: oklch(96.50% 0.0000 260.0);
     --ok-neutral-200: oklch(92.00% 0.0000 260.0);
